@@ -297,8 +297,8 @@ const Filter = ({
                             key={actualValue}
                             className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                                 isFilterSelected(type, actualValue)
-                                    ? "bg-indigo-600 text-white"
-                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                    ? "bg-white text-blue-500"
+                                    : "bg-blue-500 text-gray-100 hover:bg-gray-300"
                             }`}
                             onClick={() => handleFilterSelect(type, actualValue)}
                             aria-pressed={isFilterSelected(type, actualValue)}
@@ -319,7 +319,7 @@ const Filter = ({
                     <input
                         type="text"
                         placeholder="Search sneakers..."
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none shadow-sm transition-all duration-200 hover:shadow-md"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm transition-all duration-200 hover:shadow-md"
                         value={searchQuery}
                         onChange={(e) => handleSearchInputChange(e.target.value)}
                         aria-label="Search sneakers"
@@ -345,7 +345,7 @@ const Filter = ({
                 {isLoading && (
                     <div className="text-center mb-4">
                         <div
-                            className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
+                            className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                         <span className="ml-2 text-sm text-gray-500">Updating results...</span>
                     </div>
                 )}
@@ -353,7 +353,7 @@ const Filter = ({
                 {/* Mobile filter button - only visible on mobile */}
                 <div className="md:hidden mb-4">
                     <button
-                        className="w-full py-3 px-4 bg-indigo-600 text-white rounded-lg shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:bg-indigo-700"
+                        className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:bg-blue-700"
                         onClick={() => setIsMobileFiltersVisible(!isMobileFiltersVisible)}
                         aria-expanded={isMobileFiltersVisible}
                         aria-controls="mobile-filters"
@@ -410,7 +410,7 @@ const Filter = ({
                             }}
                         >
                             <h3 className="font-medium text-white-100">Manufacturer</h3>
-                            <span className="text-indigo-600 text-lg transition-transform duration-300 transform"
+                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
                                   style={{transform: expandedSection === "manufacturers" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
@@ -448,7 +448,7 @@ const Filter = ({
                             }}
                         >
                             <h3 className="font-medium text-white-100">Size</h3>
-                            <span className="text-indigo-600 text-lg transition-transform duration-300 transform"
+                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
                                   style={{transform: expandedSection === "sizes" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
@@ -486,7 +486,7 @@ const Filter = ({
                             }}
                         >
                             <h3 className="font-medium text-white-100">Color</h3>
-                            <span className="text-indigo-600 text-lg transition-transform duration-300 transform"
+                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
                                   style={{transform: expandedSection === "colors" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
@@ -524,7 +524,7 @@ const Filter = ({
                             }}
                         >
                             <h3 className="font-medium text-white-100">Purpose</h3>
-                            <span className="text-indigo-600 text-lg transition-transform duration-300 transform"
+                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
                                   style={{transform: expandedSection === "purposes" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
@@ -562,7 +562,7 @@ const Filter = ({
                             }}
                         >
                             <h3 className="font-medium text-white-100">Gender</h3>
-                            <span className="text-indigo-600 text-lg transition-transform duration-300 transform"
+                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
                                   style={{transform: expandedSection === "genders" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
@@ -600,7 +600,7 @@ const Filter = ({
                             }}
                         >
                             <h3 className="font-medium text-white-100">Price</h3>
-                            <span className="text-indigo-600 text-lg transition-transform duration-300 transform"
+                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
                                   style={{transform: expandedSection === "price" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
                    stroke="currentColor">
@@ -623,8 +623,8 @@ const Filter = ({
                                             key={index}
                                             className={`px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 text-left ${
                                                 isFilterSelected("price", range)
-                                                    ? "bg-indigo-600 text-white"
-                                                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                                                    ? "bg-white text-blue-500"
+                                                    : "bg-gray-200 text-gray-100 hover:bg-gray-300"
                                             }`}
                                             onClick={() => handleFilterSelect("price", range)}
                                             aria-pressed={isFilterSelected("price", range)}
@@ -647,7 +647,7 @@ const Filter = ({
                                 return (
                                     <button
                                         key={`${type}-${value.label}`}
-                                        className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
+                                        className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
                                         onClick={() => {
                                             const newFilters = {...activeFilters};
                                             delete newFilters.price;
@@ -697,7 +697,7 @@ const Filter = ({
                                     return (
                                         <button
                                             key={`${type}-${item}`}
-                                            className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
+                                            className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
                                             onClick={() => handleFilterSelect(type, item)}
                                             aria-label={`Remove ${type} filter: ${label}`}
                                         >
@@ -715,7 +715,7 @@ const Filter = ({
                                 return (
                                     <button
                                         key={`${type}-${value}`}
-                                        className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
+                                        className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
                                         onClick={() => {
                                             const newFilters = {...activeFilters};
                                             delete newFilters[type];
@@ -735,7 +735,7 @@ const Filter = ({
                             }
                         })}
                         <button
-                            className="px-3 py-1 text-indigo-600 underline text-sm transition-colors duration-200 hover:text-indigo-800"
+                            className="px-3 py-1 text-blue-600 underline text-sm transition-colors duration-200 hover:text-blue-800"
                             onClick={() => {
                                 setActiveFilters({});
                                 onFilterChange({});

@@ -3,7 +3,7 @@ import React from 'react'
 const HeroSection = () => {
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg mb-8 overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl shadow-lg mb-8 overflow-hidden">
                 <div className="flex flex-col md:flex-row p-6 md:p-8 md:items-center">
                     <div className="md:w-1/2 text-white space-y-4">
                         <h1 className="text-3xl md:text-4xl font-bold">Latest Sneaker Collection</h1>

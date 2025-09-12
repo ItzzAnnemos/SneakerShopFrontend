@@ -35,7 +35,7 @@ const SneakerCard = ({ sneaker }) => {
                             {sneaker.manufacturer}
                         </p>
                     </div>
-                    <span className="text-2xl font-bold text-blue-700">
+                    <span className="text-2xl font-bold text-blue-500">
                         ${sneaker.price.toFixed(2)}
                     </span>
                 </div>

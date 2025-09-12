@@ -7,7 +7,7 @@ import Footer from "../components/Footer.jsx";
 const Home = () => {
 
     return (
-        <div>
+        <div className="bg-gradient-to-r from-slate-700 to-slate-900 transition-colors">
             <Header/>
             <HeroSection/>
             <SneakerList/>

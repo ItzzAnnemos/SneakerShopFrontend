@@ -92,7 +92,7 @@ const Header = () => {
     }, [menuOpen]);
 
     return (
-        <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg">
+        <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
             <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                 {/* Logo Section */}
                 <div className="flex items-center space-x-2">
@@ -104,7 +104,7 @@ const Header = () => {
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="md:hidden p-2 rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                    className="md:hidden p-2 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
                     onClick={() => setMenuOpen(!menuOpen)}
                     aria-label={menuOpen ? "Close menu" : "Open menu"}
                 >
@@ -128,7 +128,7 @@ const Header = () => {
                 {/* Navigation Menu - Mobile (Drawer) & Desktop (Horizontal) */}
                 <nav
                     ref={menuRef}
-                    className={`fixed md:static top-0 left-0 h-full md:h-auto w-3/4 max-w-xs md:w-auto bg-indigo-600 md:bg-transparent z-20 transition-transform duration-300 ease-in-out md:translate-x-0 shadow-lg md:shadow-none md:ml-auto md:mr-22`}
+                    className={`fixed md:static top-0 left-0 h-full md:h-auto w-3/4 max-w-xs md:w-auto bg-blue-600 md:bg-transparent z-20 transition-transform duration-300 ease-in-out md:translate-x-0 shadow-lg md:shadow-none md:ml-auto md:mr-22`}
                     style={{
                         transform: isMobile && !menuOpen ? 'translateX(-100%)' : 'translateX(0)',
                         marginLeft: menuPosition ? `${menuPosition}%` : '0'
@@ -138,11 +138,11 @@ const Header = () => {
                     onTouchEnd={onTouchEnd}
                 >
                     {/* Mobile Menu Header */}
-                    <div className="flex justify-between items-center p-4 border-b border-indigo-500 md:hidden">
+                    <div className="flex justify-between items-center p-4 border-b border-blue-500 md:hidden">
                         <span className="font-bold text-lg">Menu</span>
                         <button
                             onClick={() => setMenuOpen(false)}
-                            className="p-1 rounded-full hover:bg-indigo-700"
+                            className="p-1 rounded-full hover:bg-blue-700"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
@@ -157,7 +157,7 @@ const Header = () => {
                         <li className="mb-4 md:mb-0 md:ml-8">
                             <Link
                                 to="/"
-                                className="block py-2 px-4 rounded hover:bg-indigo-700 md:hover:bg-indigo-500 transition-colors font-medium"
+                                className="block py-2 px-4 rounded hover:bg-blue-700 md:hover:bg-blue-500 transition-colors font-medium"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Home
@@ -166,7 +166,7 @@ const Header = () => {
                         <li className="mb-4 md:mb-0 md:ml-8">
                             <Link
                                 to="/shop"
-                                className="block py-2 px-4 rounded hover:bg-indigo-700 md:hover:bg-indigo-500 transition-colors font-medium"
+                                className="block py-2 px-4 rounded hover:bg-blue-700 md:hover:bg-blue-500 transition-colors font-medium"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Shop
@@ -175,18 +175,18 @@ const Header = () => {
                         <li className="mb-4 md:mb-0 md:ml-8 text-white">
                             <Link
                                 to="/cart"
-                                className="block py-2 px-4 rounded hover:bg-indigo-700 md:hover:bg-indigo-500 transition-colors font-medium relative"
+                                className="block py-2 px-4 rounded hover:bg-blue-700 md:hover:bg-blue-500 transition-colors font-medium relative"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Cart
                                 <span
-                                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-indigo-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">3</span>
+                                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-blue-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">3</span>
                             </Link>
                         </li>
                         <li className="mb-4 md:mb-0 md:ml-8">
                             <Link
                                 to="/login"
-                                className="block py-2 px-4 bg-white text-indigo-600 rounded shadow hover:bg-gray-100 transition-colors font-medium"
+                                className="block py-2 px-4 bg-white text-blue-600 rounded shadow hover:bg-gray-100 transition-colors font-medium"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Login

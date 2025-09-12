@@ -55,7 +55,7 @@ const Footer = () => {
     };
 
     return (
-        <footer className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white shadow-lg mt-auto">
+        <footer className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg mt-auto">
             {/* Main Footer Content */}
             <div className="container mx-auto px-4 py-8">
                 {/* Mobile Layout - Only shown on small screens */}
@@ -68,7 +68,7 @@ const Footer = () => {
                             </svg>
                             <h2 className="text-xl font-bold tracking-wider">Sneaker Shop</h2>
                         </div>
-                        <p className="text-indigo-200 mb-4">Premium sneakers for every style and occasion. Find your perfect pair today.</p>
+                        <p className="text-blue-200 mb-4">Premium sneakers for every style and occasion. Find your perfect pair today.</p>
                         <div className="flex space-x-4">
                             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -89,14 +89,14 @@ const Footer = () => {
                     </div>
 
                     {/* Quick Links - Collapsible on Mobile */}
-                    <div className="border-t border-indigo-500 pt-4">
+                    <div className="border-t border-blue-500 pt-4">
                         <div
                             className="flex justify-between items-center cursor-pointer mb-4"
                             onClick={() => toggleSection('quickLinks')}
                         >
                             <h3 className="text-lg font-semibold">Quick Links</h3>
                             <button
-                                className="p-1 rounded-full hover:bg-indigo-600 transition-colors focus:outline-none"
+                                className="p-1 rounded-full hover:bg-blue-600 transition-colors focus:outline-none"
                                 aria-label={expandedSections.quickLinks ? "Collapse quick links" : "Expand quick links"}
                             >
                                 <svg
@@ -116,25 +116,25 @@ const Footer = () => {
                             }`}
                         >
                             <ul className="space-y-2 mb-4">
-                                <li><Link to="/" className="text-indigo-200 hover:text-white hover:underline transition-colors">Home</Link></li>
-                                <li><Link to="/shop" className="text-indigo-200 hover:text-white hover:underline transition-colors">Shop All</Link></li>
-                                <li><Link to="/new-arrivals" className="text-indigo-200 hover:text-white hover:underline transition-colors">New Arrivals</Link></li>
-                                <li><Link to="/sale" className="text-indigo-200 hover:text-white hover:underline transition-colors">Sale</Link></li>
-                                <li><Link to="/about" className="text-indigo-200 hover:text-white hover:underline transition-colors">About Us</Link></li>
-                                <li><Link to="/contact" className="text-indigo-200 hover:text-white hover:underline transition-colors">Contact</Link></li>
+                                <li><Link to="/" className="text-blue-200 hover:text-white hover:underline transition-colors">Home</Link></li>
+                                <li><Link to="/shop" className="text-blue-200 hover:text-white hover:underline transition-colors">Shop All</Link></li>
+                                <li><Link to="/new-arrivals" className="text-blue-200 hover:text-white hover:underline transition-colors">New Arrivals</Link></li>
+                                <li><Link to="/sale" className="text-blue-200 hover:text-white hover:underline transition-colors">Sale</Link></li>
+                                <li><Link to="/about" className="text-blue-200 hover:text-white hover:underline transition-colors">About Us</Link></li>
+                                <li><Link to="/contact" className="text-blue-200 hover:text-white hover:underline transition-colors">Contact</Link></li>
                             </ul>
                         </div>
                     </div>
 
                     {/* Categories - Collapsible on Mobile */}
-                    <div className="border-t border-indigo-500 pt-4">
+                    <div className="border-t border-blue-500 pt-4">
                         <div
                             className="flex justify-between items-center cursor-pointer mb-4"
                             onClick={() => toggleSection('categories')}
                         >
                             <h3 className="text-lg font-semibold">Categories</h3>
                             <button
-                                className="p-1 rounded-full hover:bg-indigo-600 transition-colors focus:outline-none"
+                                className="p-1 rounded-full hover:bg-blue-600 transition-colors focus:outline-none"
                                 aria-label={expandedSections.categories ? "Collapse categories" : "Expand categories"}
                             >
                                 <svg
@@ -154,24 +154,24 @@ const Footer = () => {
                             }`}
                         >
                             <ul className="space-y-2 mb-4">
-                                <li><Link to="/category/running" className="text-indigo-200 hover:text-white hover:underline transition-colors">Running</Link></li>
-                                <li><Link to="/category/basketball" className="text-indigo-200 hover:text-white hover:underline transition-colors">Basketball</Link></li>
-                                <li><Link to="/category/lifestyle" className="text-indigo-200 hover:text-white hover:underline transition-colors">Lifestyle</Link></li>
-                                <li><Link to="/category/training" className="text-indigo-200 hover:text-white hover:underline transition-colors">Training & Gym</Link></li>
-                                <li><Link to="/category/limited" className="text-indigo-200 hover:text-white hover:underline transition-colors">Limited Edition</Link></li>
+                                <li><Link to="/category/running" className="text-blue-200 hover:text-white hover:underline transition-colors">Running</Link></li>
+                                <li><Link to="/category/basketball" className="text-blue-200 hover:text-white hover:underline transition-colors">Basketball</Link></li>
+                                <li><Link to="/category/lifestyle" className="text-blue-200 hover:text-white hover:underline transition-colors">Lifestyle</Link></li>
+                                <li><Link to="/category/training" className="text-blue-200 hover:text-white hover:underline transition-colors">Training & Gym</Link></li>
+                                <li><Link to="/category/limited" className="text-blue-200 hover:text-white hover:underline transition-colors">Limited Edition</Link></li>
                             </ul>
                         </div>
                     </div>
 
                     {/* Newsletter - Collapsible on Mobile */}
-                    <div className="border-t border-indigo-500 pt-4">
+                    <div className="border-t border-blue-500 pt-4">
                         <div
                             className="flex justify-between items-center cursor-pointer mb-4"
                             onClick={() => toggleSection('newsletter')}
                         >
                             <h3 className="text-lg font-semibold">Stay Updated</h3>
                             <button
-                                className="p-1 rounded-full hover:bg-indigo-600 transition-colors focus:outline-none"
+                                className="p-1 rounded-full hover:bg-blue-600 transition-colors focus:outline-none"
                                 aria-label={expandedSections.newsletter ? "Collapse newsletter" : "Expand newsletter"}
                             >
                                 <svg
@@ -190,7 +190,7 @@ const Footer = () => {
                                 !expandedSections.newsletter ? 'max-h-0 opacity-0' : 'max-h-60 opacity-100'
                             }`}
                         >
-                            <p className="text-indigo-200 mb-4">Subscribe to get special offers, free giveaways, and new release updates.</p>
+                            <p className="text-blue-200 mb-4">Subscribe to get special offers, free giveaways, and new release updates.</p>
                             <form onSubmit={handleSubmit} className="flex flex-col space-y-2 mb-4">
                                 <input
                                     type="email"
@@ -198,11 +198,11 @@ const Footer = () => {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Your email address"
                                     required
-                                    className="px-4 py-2 rounded bg-indigo-600 border border-indigo-500 text-white placeholder-indigo-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                    className="px-4 py-2 rounded bg-blue-600 border border-blue-500 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-yellow-100"
                                 />
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-yellow-400 text-indigo-900 rounded font-medium hover:bg-yellow-300 transition-colors"
+                                    className="px-4 py-2 bg-yellow-400 text-blue-200 rounded font-medium hover:bg-yellow-300 transition-colors"
                                 >
                                     Subscribe
                                 </button>
@@ -221,7 +221,7 @@ const Footer = () => {
                             </svg>
                             <h2 className="text-xl font-bold tracking-wider">Sneaker Shop</h2>
                         </div>
-                        <p className="text-indigo-200 mb-4">Premium sneakers for every style and occasion. Find your perfect pair today.</p>
+                        <p className="text-blue-200 mb-4">Premium sneakers for every style and occasion. Find your perfect pair today.</p>
                         <div className="flex space-x-4">
                             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-400 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -243,33 +243,33 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <div className="col-span-1">
-                        <h3 className="text-lg font-semibold mb-4 border-b border-indigo-500 pb-2">Quick Links</h3>
+                        <h3 className="text-lg font-semibold mb-4 border-b border-blue-500 pb-2">Quick Links</h3>
                         <ul className="space-y-2">
-                            <li><Link to="/" className="text-indigo-200 hover:text-white hover:underline transition-colors">Home</Link></li>
-                            <li><Link to="/shop" className="text-indigo-200 hover:text-white hover:underline transition-colors">Shop All</Link></li>
-                            <li><Link to="/new-arrivals" className="text-indigo-200 hover:text-white hover:underline transition-colors">New Arrivals</Link></li>
-                            <li><Link to="/sale" className="text-indigo-200 hover:text-white hover:underline transition-colors">Sale</Link></li>
-                            <li><Link to="/about" className="text-indigo-200 hover:text-white hover:underline transition-colors">About Us</Link></li>
-                            <li><Link to="/contact" className="text-indigo-200 hover:text-white hover:underline transition-colors">Contact</Link></li>
+                            <li><Link to="/" className="text-blue-200 hover:text-white hover:underline transition-colors">Home</Link></li>
+                            <li><Link to="/shop" className="text-blue-200 hover:text-white hover:underline transition-colors">Shop All</Link></li>
+                            <li><Link to="/new-arrivals" className="text-blue-200 hover:text-white hover:underline transition-colors">New Arrivals</Link></li>
+                            <li><Link to="/sale" className="text-blue-200 hover:text-white hover:underline transition-colors">Sale</Link></li>
+                            <li><Link to="/about" className="text-blue-200 hover:text-white hover:underline transition-colors">About Us</Link></li>
+                            <li><Link to="/contact" className="text-blue-200 hover:text-white hover:underline transition-colors">Contact</Link></li>
                         </ul>
                     </div>
 
                     {/* Categories */}
                     <div className="col-span-1">
-                        <h3 className="text-lg font-semibold mb-4 border-b border-indigo-500 pb-2">Categories</h3>
+                        <h3 className="text-lg font-semibold mb-4 border-b border-blue-500 pb-2">Categories</h3>
                         <ul className="space-y-2">
-                            <li><Link to="/category/running" className="text-indigo-200 hover:text-white hover:underline transition-colors">Running</Link></li>
-                            <li><Link to="/category/basketball" className="text-indigo-200 hover:text-white hover:underline transition-colors">Basketball</Link></li>
-                            <li><Link to="/category/lifestyle" className="text-indigo-200 hover:text-white hover:underline transition-colors">Lifestyle</Link></li>
-                            <li><Link to="/category/training" className="text-indigo-200 hover:text-white hover:underline transition-colors">Training & Gym</Link></li>
-                            <li><Link to="/category/limited" className="text-indigo-200 hover:text-white hover:underline transition-colors">Limited Edition</Link></li>
+                            <li><Link to="/category/running" className="text-blue-200 hover:text-white hover:underline transition-colors">Running</Link></li>
+                            <li><Link to="/category/basketball" className="text-blue-200 hover:text-white hover:underline transition-colors">Basketball</Link></li>
+                            <li><Link to="/category/lifestyle" className="text-blue-200 hover:text-white hover:underline transition-colors">Lifestyle</Link></li>
+                            <li><Link to="/category/training" className="text-blue-200 hover:text-white hover:underline transition-colors">Training & Gym</Link></li>
+                            <li><Link to="/category/limited" className="text-blue-200 hover:text-white hover:underline transition-colors">Limited Edition</Link></li>
                         </ul>
                     </div>
 
                     {/* Newsletter */}
                     <div className="col-span-1">
-                        <h3 className="text-lg font-semibold mb-4 border-b border-indigo-500 pb-2">Stay Updated</h3>
-                        <p className="text-indigo-200 mb-4">Subscribe to get special offers, free giveaways, and new release updates.</p>
+                        <h3 className="text-lg font-semibold mb-4 border-b border-blue-500 pb-2">Stay Updated</h3>
+                        <p className="text-blue-200 mb-4">Subscribe to get special offers, free giveaways, and new release updates.</p>
                         <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
                             <input
                                 type="email"
@@ -277,11 +277,11 @@ const Footer = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Your email address"
                                 required
-                                className="px-4 py-2 rounded bg-indigo-600 border border-indigo-500 text-white placeholder-indigo-300 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                className="px-4 py-2 rounded bg-blue-100 border border-blue-500 text-blue-700 placeholder-blue-700 focus:outline-none focus:ring-2 focus:ring-yellow-100"
                             />
                             <button
                                 type="submit"
-                                className="px-4 py-2 bg-yellow-400 text-indigo-900 rounded font-medium hover:bg-yellow-300 transition-colors"
+                                className="px-4 py-2 bg-yellow-400 text-blue-500 rounded font-medium hover:bg-yellow-300 transition-colors"
                             >
                                 Subscribe
                             </button>
@@ -291,13 +291,13 @@ const Footer = () => {
             </div>
 
             {/* Bottom Bar */}
-            <div className="bg-indigo-800 py-4">
+            <div className="bg-blue-700 py-4">
                 <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-indigo-200 text-sm mb-2 md:mb-0">&copy; {new Date().getFullYear()} Sneaker Shop. All rights reserved.</p>
+                    <p className="text-blue-200 text-sm mb-2 md:mb-0">&copy; {new Date().getFullYear()} Sneaker Shop. All rights reserved.</p>
                     <div className="flex flex-wrap justify-center md:justify-end gap-4 md:space-x-6">
-                        <Link to="/privacy" className="text-sm text-indigo-200 hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link to="/terms" className="text-sm text-indigo-200 hover:text-white transition-colors">Terms of Service</Link>
-                        <Link to="/shipping" className="text-sm text-indigo-200 hover:text-white transition-colors">Shipping Info</Link>
+                        <Link to="/privacy" className="text-sm text-blue-200 hover:text-white transition-colors">Privacy Policy</Link>
+                        <Link to="/terms" className="text-sm text-blue-200 hover:text-white transition-colors">Terms of Service</Link>
+                        <Link to="/shipping" className="text-sm text-blue-200 hover:text-white transition-colors">Shipping Info</Link>
                     </div>
                 </div>
             </div>

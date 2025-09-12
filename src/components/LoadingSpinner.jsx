@@ -17,17 +17,17 @@ const LoadingSpinner = () => {
             <div className="relative w-24 h-24">
                 {/* Outer rotating circle */}
                 <div
-                    className="absolute inset-0 rounded-full border-4 border-indigo-600 border-t-transparent"
+                    className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent"
                     style={{ transform: `rotate(${rotation}deg)` }}
                 ></div>
 
                 {/* Inner pulse effect */}
-                <div className="absolute inset-2 rounded-full bg-indigo-100 animate-pulse flex items-center justify-center">
+                <div className="absolute inset-2 rounded-full bg-blue-100 animate-pulse flex items-center justify-center">
                     {/* Sneaker silhouette */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
-                        className="w-12 h-12 text-indigo-600"
+                        className="w-12 h-12 text-blue-600"
                         fill="currentColor"
                     >
                         <path d="M2,14.5c0,0,2-2.5,2-5s2-5,2-5l10,1c2,0,4,4,4,6s-6,8-6,8H2z" />
@@ -39,11 +39,11 @@ const LoadingSpinner = () => {
 
             {/* Loading text with gradient */}
             <div className="mt-6 relative">
-        <span className="text-lg font-medium bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        <span className="text-lg font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Loading Sneakers...
         </span>
                 <div className="mt-2 w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-indigo-600 to-purple-600 animate-pulse-slow"></div>
+                    <div className="h-full bg-gradient-to-r from-blue-600 to-purple-600 animate-pulse-slow"></div>
                 </div>
             </div>
         </div>

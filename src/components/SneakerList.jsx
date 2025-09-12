@@ -90,7 +90,7 @@ const SneakerList = () => {
                     <h3 className="text-lg font-medium text-gray-900 mb-1">Error</h3>
                     <p className="text-gray-600">{error}</p>
                     <button
-                        className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         onClick={fetchSneakers}
                     >
                         Try again
@@ -157,7 +157,7 @@ const SneakerList = () => {
                     <h3 className="text-lg font-medium text-gray-900 mb-1">No sneakers found</h3>
                     <p className="text-gray-600">Try changing your search or filter criteria</p>
                     <button
-                        className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         onClick={resetFilters}
                     >
                         Reset filters
