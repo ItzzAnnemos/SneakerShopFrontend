@@ -1,9 +1,16 @@
 import React from 'react';
 import { Heart, ShoppingCart } from 'lucide-react';
+import {useNavigate} from "react-router-dom";
 
 const SneakerCard = ({ sneaker }) => {
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+        navigate(`/sneaker/${sneaker.id}`);
+    };
+
     return (
-        <div className="bg-white border border-gray-100 shadow-md rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl group relative flex flex-col h-full">
+        <div onClick={handleCardClick} className="bg-white border border-gray-100 shadow-md rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl group relative flex flex-col h-full">
             {/* Wishlist Icon */}
             <div className="absolute top-4 right-4 z-10 flex space-x-2">
                 <button className="bg-white/60 backdrop-blur-sm rounded-full p-2 hover:bg-white/80 transition-colors">

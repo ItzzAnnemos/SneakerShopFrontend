@@ -113,7 +113,7 @@ const SneakerList = () => {
 
             {/* Results count */}
             <div className="mb-6">
-                <p className="text-gray-600">
+                <p className="text-center text-gray-200">
                     Showing <span className="font-medium">{sneakers.length}</span> sneakers
                 </p>
             </div>
