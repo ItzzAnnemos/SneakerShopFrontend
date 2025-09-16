@@ -59,7 +59,7 @@ const Filter = ({
                 // Fetch each endpoint independently to handle individual failures
                 const fetchEndpoint = async (endpoint, index) => {
                     try {
-                        const response = await fetch(`http://localhost:8080/api/${endpoint}`);
+                        const response = await fetch(`${process.env.VITE_API_URL}/api/${endpoint}`);
                         const data = await response.json();
 
                         // Update loading state for this endpoint
@@ -137,7 +137,7 @@ const Filter = ({
             console.log("Sending filter data to backend:", filterData); // Add this for debugging
 
             // Send POST request to filter endpoint
-            fetch("http://localhost:8080/api/sneakers/filter", {
+            fetch(`${process.env.VITE_API_URL}api/sneakers/filter`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -156,7 +156,7 @@ const Filter = ({
                 });
         } else {
             // No filters, fetch all sneakers
-            fetch("http://localhost:8080/api/sneakers")
+            fetch(`${process.env.VITE_API_URL}/api/sneakers`)
                 .then((response) => response.json())
                 .then((data) => {
                     onFilterResults(data);
