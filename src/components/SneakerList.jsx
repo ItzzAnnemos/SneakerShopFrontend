@@ -9,6 +9,7 @@ const SneakerList = () => {
     const [error, setError] = useState(null);
     const [activeFilters, setActiveFilters] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
+    const API_URL = import.meta.env.VITE_API_URL;
 
     // Initial data fetch when component mounts
     useEffect(() => {
@@ -20,7 +21,7 @@ const SneakerList = () => {
         setLoading(true);
         setError(null);
 
-        fetch(`${process.env.VITE_API_URL}/api/sneakers`)
+        fetch(`${API_URL}/api/sneakers`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Server responded with status ${response.status}`);

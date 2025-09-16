@@ -26,6 +26,8 @@ const Filter = ({
         genders: true
     });
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     // Price ranges for e-commerce convention
     const priceRanges = [
         {min: 0, max: 50, label: "Under $50"},
@@ -59,7 +61,7 @@ const Filter = ({
                 // Fetch each endpoint independently to handle individual failures
                 const fetchEndpoint = async (endpoint, index) => {
                     try {
-                        const response = await fetch(`${process.env.VITE_API_URL}/api/${endpoint}`);
+                        const response = await fetch(`${API_URL}/api/${endpoint}`);
                         const data = await response.json();
 
                         // Update loading state for this endpoint
@@ -137,7 +139,7 @@ const Filter = ({
             console.log("Sending filter data to backend:", filterData); // Add this for debugging
 
             // Send POST request to filter endpoint
-            fetch(`${process.env.VITE_API_URL}api/sneakers/filter`, {
+            fetch(`${API_URL}api/sneakers/filter`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -156,7 +158,7 @@ const Filter = ({
                 });
         } else {
             // No filters, fetch all sneakers
-            fetch(`${process.env.VITE_API_URL}/api/sneakers`)
+            fetch(`${API_URL}/api/sneakers`)
                 .then((response) => response.json())
                 .then((data) => {
                     onFilterResults(data);

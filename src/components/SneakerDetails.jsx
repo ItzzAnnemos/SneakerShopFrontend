@@ -8,6 +8,8 @@ const SneakerDetails = ({sneakerId}) => {
     const [selectedImage, setSelectedImage] = useState(0);
     const [isDetailsOpen, setIsDetailsOpen] = useState(true);
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     // Fetch sneaker details when component mounts or sneakerId changes
     useEffect(() => {
         if (sneakerId) {
@@ -20,7 +22,7 @@ const SneakerDetails = ({sneakerId}) => {
         setLoading(true);
         setError(null);
 
-        fetch(`${process.env.VITE_API_URL}/api/sneakers/${sneakerId}`)
+        fetch(`${API_URL}/api/sneakers/${sneakerId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Server responded with status ${response.status}`);
