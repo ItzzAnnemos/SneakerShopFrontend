@@ -20,7 +20,7 @@ const SneakerDetails = ({sneakerId}) => {
         setLoading(true);
         setError(null);
 
-        fetch(`http://localhost:8080/api/sneakers/${sneakerId}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/sneakers/${sneakerId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`Server responded with status ${response.status}`);
