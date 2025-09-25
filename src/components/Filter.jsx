@@ -626,7 +626,7 @@ const Filter = ({
                                             className={`px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 text-left ${
                                                 isFilterSelected("price", range)
                                                     ? "bg-white text-blue-500"
-                                                    : "bg-gray-200 text-gray-100 hover:bg-gray-300"
+                                                    : "bg-blue-500 text-white hover:bg-gray-300"
                                             }`}
                                             onClick={() => handleFilterSelect("price", range)}
                                             aria-pressed={isFilterSelected("price", range)}
@@ -642,110 +642,116 @@ const Filter = ({
 
                 {/* Active filters display */}
                 {Object.keys(activeFilters).length > 0 && (
-                    <div className="mt-6 flex flex-wrap gap-2 items-center p-3 rounded-lg" aria-live="polite">
-                        <span className="text-sm font-medium text-gray-700">Active filters:</span>
-                        {Object.entries(activeFilters).map(([type, value]) => {
-                            if (type === "price") {
-                                return (
-                                    <button
-                                        key={`${type}-${value.label}`}
-                                        className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
-                                        onClick={() => {
-                                            const newFilters = {...activeFilters};
-                                            delete newFilters.price;
-                                            setActiveFilters(newFilters);
-                                            onFilterChange(newFilters);
-                                        }}
-                                        aria-label={`Remove price filter: ${value.label}`}
-                                    >
-                                        {value.label}
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                  d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                );
-                            } else if (Array.isArray(value)) {
-                                return value.map(item => {
-                                    // Find label for item using the helper function
-                                    let label = item;
-                                    const filterArrays = {
-                                        "size": sizes,
-                                        "color": colors,
-                                        "purpose": purposes,
-                                        "gender": genders
-                                    };
-
-                                    if (filterArrays[type]) {
-                                        const filterArray = filterArrays[type];
-                                        if (Array.isArray(filterArray)) {
-                                            const foundItem = filterArray.find(i => {
-                                                const {value} = getFilterItemProps(i, type === "size" ? "size" : "value");
-                                                return value === item;
-                                            });
-
-                                            if (foundItem) {
-                                                const {label: itemLabel} = getFilterItemProps(
-                                                    foundItem,
-                                                    type === "size" ? "size" : "value",
-                                                    type === "size" ? "size" : "label"
-                                                );
-                                                label = itemLabel;
-                                            }
-                                        }
-                                    }
-
+                    <div>
+                        <div className="flex items-center justify-between gap-3 mt-4">
+                            <h2 className="text-l font-medium text-white text-center">Active filters:</h2>
+                            <button
+                                className="px-3 py-1 bg-white text-blue-600 rounded-full text-sm transition-colors duration-200 hover:text-blue-800"
+                                onClick={() => {
+                                    setActiveFilters({});
+                                    onFilterChange({});
+                                }}
+                                aria-label="Clear all filters"
+                            >
+                                Clear all
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2 items-center py-3 rounded-lg" aria-live="polite">
+                            {Object.entries(activeFilters).map(([type, value]) => {
+                                if (type === "price") {
                                     return (
                                         <button
-                                            key={`${type}-${item}`}
+                                            key={`${type}-${value.label}`}
                                             className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
-                                            onClick={() => handleFilterSelect(type, item)}
-                                            aria-label={`Remove ${type} filter: ${label}`}
+                                            onClick={() => {
+                                                const newFilters = {...activeFilters};
+                                                delete newFilters.price;
+                                                setActiveFilters(newFilters);
+                                                onFilterChange(newFilters);
+                                            }}
+                                            aria-label={`Remove price filter: ${value.label}`}
                                         >
-                                            {`${type}: ${label}`}
+                                            {value.label}
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor"
-                                                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                                                 aria-hidden="true">
+                                                 viewBox="0 0 24 24"
+                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                                       d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
                                         </button>
                                     );
-                                });
-                            } else {
-                                return (
-                                    <button
-                                        key={`${type}-${value}`}
-                                        className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
-                                        onClick={() => {
-                                            const newFilters = {...activeFilters};
-                                            delete newFilters[type];
-                                            setActiveFilters(newFilters);
-                                            onFilterChange(newFilters);
-                                        }}
-                                        aria-label={`Remove ${type} filter: ${value}`}
-                                    >
-                                        {`${type}: ${value}`}
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                  d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                    </button>
-                                );
-                            }
-                        })}
-                        <button
-                            className="px-3 py-1 text-blue-600 underline text-sm transition-colors duration-200 hover:text-blue-800"
-                            onClick={() => {
-                                setActiveFilters({});
-                                onFilterChange({});
-                            }}
-                            aria-label="Clear all filters"
-                        >
-                            Clear all
-                        </button>
+                                } else if (Array.isArray(value)) {
+                                    return value.map(item => {
+                                        // Find label for item using the helper function
+                                        let label = item;
+                                        const filterArrays = {
+                                            "size": sizes,
+                                            "color": colors,
+                                            "purpose": purposes,
+                                            "gender": genders
+                                        };
+
+                                        if (filterArrays[type]) {
+                                            const filterArray = filterArrays[type];
+                                            if (Array.isArray(filterArray)) {
+                                                const foundItem = filterArray.find(i => {
+                                                    const {value} = getFilterItemProps(i, type === "size" ? "size" : "value");
+                                                    return value === item;
+                                                });
+
+                                                if (foundItem) {
+                                                    const {label: itemLabel} = getFilterItemProps(
+                                                        foundItem,
+                                                        type === "size" ? "size" : "value",
+                                                        type === "size" ? "size" : "label"
+                                                    );
+                                                    label = itemLabel;
+                                                }
+                                            }
+                                        }
+
+                                        return (
+                                            <button
+                                                key={`${type}-${item}`}
+                                                className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
+                                                onClick={() => handleFilterSelect(type, item)}
+                                                aria-label={`Remove ${type} filter: ${label}`}
+                                            >
+                                                {label}
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor"
+                                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                                     aria-hidden="true">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                          d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        );
+                                    });
+                                } else {
+                                    return (
+                                        <button
+                                            key={`${type}-${value}`}
+                                            className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
+                                            onClick={() => {
+                                                const newFilters = {...activeFilters};
+                                                delete newFilters[type];
+                                                setActiveFilters(newFilters);
+                                                onFilterChange(newFilters);
+                                            }}
+                                            aria-label={`Remove ${type} filter: ${value}`}
+                                        >
+                                            {value}
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor"
+                                                 viewBox="0 0 24 24"
+                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                      d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    );
+                                }
+                            })}
+                        </div>
                     </div>
                 )}
             </div>

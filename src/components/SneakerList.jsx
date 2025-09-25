@@ -133,7 +133,7 @@ const SneakerList = () => {
                                     name: sneaker.name,
                                     manufacturer: sneaker.manufacturer.name,
                                     price: sneaker.price,
-                                    imageUrl: sneaker.images?.[0] || "/placeholder.jpg"
+                                    imageUrl: sneaker.image
                                 }}
                             />
                         </div>

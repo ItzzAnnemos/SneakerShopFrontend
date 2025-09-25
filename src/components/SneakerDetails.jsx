@@ -121,7 +121,7 @@ const SneakerDetails = ({sneakerId}) => {
                     {/* Main Image */}
                     <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                         <img
-                            src={sneaker.images?.[selectedImage] || "/placeholder.jpg"}
+                            src={sneaker.images?.[selectedImage]}
                             alt={sneaker.name}
                             className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
                         />
@@ -154,9 +154,9 @@ const SneakerDetails = ({sneakerId}) => {
                 {/* Product Details */}
                 <div className="space-y-6">
                     {/* Basic Info */}
-                    <div className="my-10">
-                        <h1 className="text-3xl font-bold text-white mb-2">{sneaker.name}</h1>
-                        <p className="text-2xl text-blue-200 mb-4">{sneaker.manufacturer?.name}</p>
+                    <div className="md:my-10">
+                        <h1 className="text-xl md:text-3xl font-bold text-white mb-2">{sneaker.name}</h1>
+                        <p className="text-xl md:text-2xl text-blue-200 mb-4">{sneaker.manufacturer?.name}</p>
                         <div
                             className="text-4xl font-bold text-blue-500"
                         >${sneaker.price}</div>
