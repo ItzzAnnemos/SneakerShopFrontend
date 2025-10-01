@@ -1,5 +1,5 @@
 import React from 'react';
-import {Heart, ShoppingCart} from 'lucide-react';
+import {Heart} from 'lucide-react';
 import {useNavigate} from "react-router-dom";
 
 const SneakerCard = ({sneaker}) => {
@@ -9,43 +9,49 @@ const SneakerCard = ({sneaker}) => {
         navigate(`/sneaker/${sneaker.id}`);
     };
 
-    return (<div onClick={handleCardClick}
-                 className="bg-white border border-gray-100 shadow-md rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl group relative flex flex-col h-full">
-        {/* Wishlist Icon */}
-        <div className="absolute top-4 right-4 z-10 flex space-x-2">
-            <button className="bg-white/60 backdrop-blur-sm rounded-full p-2 hover:bg-white/80 transition-colors">
-                <Heart
-                    className="text-gray-500 group-hover:text-red-500 transition-colors"
-                    size={20}
-                    strokeWidth={1.5}
+    return (
+        <div onClick={handleCardClick}
+             className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-2xl group relative flex flex-col h-full cursor-pointer">
+            {/* Wishlist Icon */}
+            <div className="absolute top-3 right-3 z-10">
+                <button
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-white dark:bg-gray-700 rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors shadow-sm">
+                    <Heart
+                        className="text-gray-400 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                        size={18}
+                        strokeWidth={2}
+                    />
+                </button>
+            </div>
+
+            {/* Sneaker Image */}
+            <div className="w-full aspect-square bg-gray-50 dark:bg-gray-700 flex items-center justify-center">
+                <img
+                    src={sneaker.imageUrl}
+                    alt={sneaker.name}
+                    className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
-            </button>
+            </div>
+
+            {/* Sneaker Details */}
+            <div className="p-4 bg-white dark:bg-gray-800 mt-auto space-y-1">
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                    {sneaker.manufacturer}
+                </span>
+
+                <h3 className="text-sm font-medium text-gray-900 dark:text-white line-clamp-2 leading-snug">
+                    {sneaker.name}
+                </h3>
+
+                <div className="pt-2">
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                        ${sneaker.price.toFixed(2)}
+                    </span>
+                </div>
+            </div>
         </div>
-
-        {/* Sneaker Image */}
-        <div className="w-full flex-grow flex items-end justify-center">
-            <img
-                src={sneaker.imageUrl}
-                alt={sneaker.name}
-                className="w-full h-auto object-contain transform group-hover:scale-110 transition-transform duration-300 ease-in-out"
-            />
-        </div>
-
-        {/* Sneaker Details */}
-        <div className="px-3 md:py-2 bg-white mt-auto">
-            <span className="text-xs md:text-sm text-gray-500 font-medium">
-                {sneaker.manufacturer}
-            </span>
-
-            <h3 className="text-base md:text-lg font-bold text-gray-900 leading-tight">
-                {sneaker.name}
-            </h3>
-
-            <h3 className="text-xl md:text-2xl my-2 font-bold text-blue-600 whitespace-nowrap">
-                ${sneaker.price.toFixed(2)}
-            </h3>
-        </div>
-    </div>);
+    );
 };
 
 export default SneakerCard;

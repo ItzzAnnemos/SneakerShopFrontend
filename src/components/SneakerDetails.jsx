@@ -10,14 +10,13 @@ const SneakerDetails = ({sneakerId}) => {
 
     const API_URL = import.meta.env.VITE_API_URL;
 
-    // Fetch sneaker details when component mounts or sneakerId changes
     useEffect(() => {
+        window.scrollTo(0, 0);
         if (sneakerId) {
             fetchSneakerDetails();
         }
     }, [sneakerId]);
 
-    // Function to fetch sneaker details
     const fetchSneakerDetails = useCallback(() => {
         setLoading(true);
         setError(null);
@@ -51,7 +50,7 @@ const SneakerDetails = ({sneakerId}) => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
+            <div className="flex justify-center items-center min-h-screen bg-white dark:bg-gray-900">
                 <LoadingSpinner/>
             </div>
         );
@@ -60,10 +59,10 @@ const SneakerDetails = ({sneakerId}) => {
     if (error) {
         return (
             <div className="container mx-auto px-4 py-8">
-                <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-8 text-center">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12 mx-auto text-red-400 mb-4"
+                        className="h-12 w-12 mx-auto text-red-500 dark:text-red-400 mb-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -75,10 +74,10 @@ const SneakerDetails = ({sneakerId}) => {
                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                         />
                     </svg>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">Error</h3>
-                    <p className="text-gray-600">{error}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Error</h3>
+                    <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
                     <button
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        className="px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-full hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors font-medium"
                         onClick={fetchSneakerDetails}
                     >
                         Try again
@@ -91,10 +90,10 @@ const SneakerDetails = ({sneakerId}) => {
     if (!sneaker) {
         return (
             <div className="container mx-auto px-4 py-8">
-                <div className="bg-gray-50 rounded-lg p-8 text-center">
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-12 text-center">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-12 w-12 mx-auto text-gray-400 mb-4"
+                        className="h-16 w-16 mx-auto text-gray-300 dark:text-gray-600 mb-4"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -102,42 +101,42 @@ const SneakerDetails = ({sneakerId}) => {
                         <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            strokeWidth={2}
+                            strokeWidth={1.5}
                             d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                     </svg>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">Sneaker not found</h3>
-                    <p className="text-gray-600">The requested sneaker could not be found</p>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Sneaker not found</h3>
+                    <p className="text-gray-600 dark:text-gray-400">The requested sneaker could not be found</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="container mx-auto px-4 py-8 lg:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
                 {/* Image Gallery */}
                 <div className="space-y-4">
                     {/* Main Image */}
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="aspect-square bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden">
                         <img
                             src={sneaker.images?.[selectedImage]}
                             alt={sneaker.name}
-                            className="w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
+                            className="w-full h-full object-cover"
                         />
                     </div>
 
                     {/* Thumbnail Images */}
                     {sneaker.images && sneaker.images.length > 1 && (
-                        <div className="flex gap-2 overflow-x-auto">
+                        <div className="flex gap-3 overflow-x-auto pb-2">
                             {sneaker.images.map((image, index) => (
                                 <button
                                     key={index}
                                     onClick={() => handleImageSelect(index)}
-                                    className={`flex-shrink-0 aspect-square w-20 h-20 bg-gray-100 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                                    className={`flex-shrink-0 aspect-square w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
                                         selectedImage === index
-                                            ? "border-blue-600 shadow-lg"
-                                            : "border-gray-200 hover:border-gray-300"
+                                            ? "border-gray-900 dark:border-gray-300 shadow-md"
+                                            : "border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500"
                                     }`}
                                 >
                                     <img
@@ -152,43 +151,44 @@ const SneakerDetails = ({sneakerId}) => {
                 </div>
 
                 {/* Product Details */}
-                <div className="space-y-6">
+                <div className="space-y-6 lg:pt-8">
                     {/* Basic Info */}
-                    <div className="md:my-10">
-                        <h1 className="text-xl md:text-3xl font-bold text-white mb-2">{sneaker.name}</h1>
-                        <p className="text-xl md:text-2xl text-blue-200 mb-4">{sneaker.manufacturer?.name}</p>
-                        <div
-                            className="text-4xl font-bold text-blue-500"
-                        >${sneaker.price}</div>
+                    <div>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-3 leading-tight">{sneaker.name}</h1>
+                        <p className="text-xl md:text-2xl text-blue-600 dark:text-blue-400 mb-6">{sneaker.manufacturer?.name}</p>
+                        <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                            ${sneaker.price}
+                        </div>
                     </div>
 
+                    {/* Available Sizes */}
                     {sneaker.sizes && sneaker.sizes.length > 0 && (
                         <div>
-                            <span className="text-white block mb-2">Available Sizes</span>
-                            <div className="flex flex-wrap gap-2">
+                            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-3">
+                                Select Size
+                            </h3>
+                            <div className="grid grid-cols-5 md:grid-cols-6 gap-2">
                                 {sneaker.sizes.map((size, index) => (
-                                    <span
+                                    <button
                                         key={index}
-                                        className="inline-block px-3 py-1 bg-white border border-gray-200 text-blue-500 rounded-md text-sm font-medium"
+                                        className="px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg text-sm font-medium hover:border-gray-900 dark:hover:border-gray-300 transition-colors"
                                     >
-                                                {typeof size === 'object' ? size.size || size.id : size}
-                                            </span>
+                                        {typeof size === 'object' ? size.size || size.id : size}
+                                    </button>
                                 ))}
                             </div>
                         </div>
                     )}
 
                     {/* Action Buttons */}
-                    <div className="flex gap-4 pt-4">
-                        <button
-                            className="w-50 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-300 transform hover:shadow-lg">
+                    <div className="flex gap-3 pt-4">
+                        <button className="flex-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 py-4 px-8 rounded-full font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
                             Add to Cart
                         </button>
-                        <button
-                            className="px-6 py-3 border border-gray-300 rounded-lg font-medium text-white hover:bg-gray-50 hover:text-blue-500 transition-colors duration-300">
+                        <button className="px-6 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-full font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
+                                className="h-6 w-6"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -203,16 +203,16 @@ const SneakerDetails = ({sneakerId}) => {
                         </button>
                     </div>
 
-                    {/* Specifications */}
-                    <div className="space-y-4 my-10">
-                        <div
+                    {/* Product Details Accordion */}
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-8">
+                        <button
                             onClick={toggleDetails}
-                            className="inline-flex gap-2 items-center cursor-pointer group"
+                            className="w-full flex justify-between items-center group"
                         >
-                            <h3 className="text-lg font-medium text-white">Details</h3>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Product Details</h3>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className={`h-5 w-5 text-white transition-transform duration-300 group-hover:text-blue-500 ${
+                                className={`h-6 w-6 text-blue-600 dark:text-blue-400 transition-transform duration-300 ${
                                     isDetailsOpen ? 'rotate-180' : ''
                                 }`}
                                 fill="none"
@@ -226,39 +226,44 @@ const SneakerDetails = ({sneakerId}) => {
                                     d="M19 9l-7 7-7-7"
                                 />
                             </svg>
-                        </div>
+                        </button>
+
                         <div
-                            className={`bg-gray-50 rounded-lg transition-all duration-500 ease-in-out overflow-hidden ${
-                                isDetailsOpen
-                                    ? 'opacity-100 p-4 space-y-3'
-                                    : 'max-h-0 opacity-0 p-0'
-                            }`}>
-                            <div className={`transition-all duration-300 flex flex-col gap-2 ${
-                                isDetailsOpen ? 'transform translate-y-0' : 'transform -translate-y-4'
-                            }`}>
+                            className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                                isDetailsOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
+                            }`}
+                        >
+                            <div className="space-y-3">
                                 {sneaker.manufacturer && (
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Brand</span>
-                                        <span
-                                            className="font-medium text-blue-500">{sneaker.manufacturer?.name}</span>
+                                    <div className="flex justify-between py-2">
+                                        <span className="text-gray-600 dark:text-gray-400">Brand</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">
+                                            {sneaker.manufacturer?.name}
+                                        </span>
                                     </div>
                                 )}
                                 {sneaker.purpose && (
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Purpose</span>
-                                        <span className="font-medium text-blue-500">{sneaker.purpose}</span>
+                                    <div className="flex justify-between py-2 border-t border-gray-100 dark:border-gray-800">
+                                        <span className="text-gray-600 dark:text-gray-400">Purpose</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">
+                                            {sneaker.purpose}
+                                        </span>
                                     </div>
                                 )}
                                 {sneaker.color && (
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Color</span>
-                                        <span className="font-medium text-blue-500">{sneaker.color}</span>
+                                    <div className="flex justify-between py-2 border-t border-gray-100 dark:border-gray-800">
+                                        <span className="text-gray-600 dark:text-gray-400">Color</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">
+                                            {sneaker.color}
+                                        </span>
                                     </div>
                                 )}
                                 {sneaker.gender && (
-                                    <div className="flex justify-between">
-                                        <span className="text-gray-600">Gender</span>
-                                        <span className="font-medium text-blue-500">{sneaker.gender}</span>
+                                    <div className="flex justify-between py-2 border-t border-gray-100 dark:border-gray-800">
+                                        <span className="text-gray-600 dark:text-gray-400">Gender</span>
+                                        <span className="font-medium text-gray-900 dark:text-white">
+                                            {sneaker.gender}
+                                        </span>
                                     </div>
                                 )}
                             </div>

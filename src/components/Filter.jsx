@@ -1,23 +1,27 @@
 import {useEffect, useState, useCallback} from "react";
 
 const Filter = ({
-                    onFilterChange,
-                    onSearchChange,
-                    onFilterResults,
-                    initialFilters = {},
-                    initialSearchQuery = ""
+                    onPendingFilterChange,
+                    onPendingSearchChange,
+                    pendingFilters = {},
+                    pendingSearchQuery = "",
+                    onApplyFilters,
+                    onResetFilters,
+                    isLoading = false
                 }) => {
-    // States for all filter options
     const [manufacturersList, setManufacturers] = useState([]);
     const [sizes, setSizes] = useState([]);
     const [colors, setColors] = useState([]);
     const [purposes, setPurposes] = useState([]);
     const [genders, setGenders] = useState([]);
-    const [expandedSection, setExpandedSection] = useState(null);
-    const [activeFilters, setActiveFilters] = useState(initialFilters);
-    const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isMobileFiltersVisible, setIsMobileFiltersVisible] = useState(false);
+    const [expandedSections, setExpandedSections] = useState({
+        manufacturer: true,
+        size: false,
+        color: false,
+        purpose: false,
+        gender: false,
+        price: false
+    });
     const [filtersLoading, setFiltersLoading] = useState({
         manufacturers: true,
         sizes: true,
@@ -28,28 +32,9 @@ const Filter = ({
 
     const API_URL = import.meta.env.VITE_API_URL;
 
-    // Price ranges for e-commerce convention
-    const priceRanges = [
-        {min: 0, max: 50, label: "Under $50"},
-        {min: 50, max: 100, label: "$50 - $100"},
-        {min: 100, max: 150, label: "$100 - $150"},
-        {min: 150, max: 200, label: "$150 - $200"},
-        {min: 200, max: null, label: "$200+"}
-    ];
-
-    // Fetch all filter options from backend
     useEffect(() => {
         const fetchFilterOptions = async () => {
             try {
-                const endpoints = [
-                    "manufacturers",
-                    "sizes",
-                    "colors",
-                    "purposes",
-                    "genders"
-                ];
-
-                // Set all to loading
                 setFiltersLoading({
                     manufacturers: true,
                     sizes: true,
@@ -58,24 +43,20 @@ const Filter = ({
                     genders: true
                 });
 
-                // Fetch each endpoint independently to handle individual failures
-                const fetchEndpoint = async (endpoint, index) => {
+                const fetchEndpoint = async (endpoint) => {
                     try {
                         const response = await fetch(`${API_URL}/api/${endpoint}`);
                         const data = await response.json();
 
-                        // Update loading state for this endpoint
                         setFiltersLoading(prev => ({
                             ...prev,
                             [endpoint]: false
                         }));
 
-                        // Return data for this endpoint
                         return data;
                     } catch (error) {
                         console.error(`Error fetching ${endpoint}:`, error);
 
-                        // Update loading state even on error
                         setFiltersLoading(prev => ({
                             ...prev,
                             [endpoint]: false
@@ -85,31 +66,22 @@ const Filter = ({
                     }
                 };
 
-                // Fetch each endpoint
-                const manufacturersData = await fetchEndpoint("manufacturers");
-                const sizesData = await fetchEndpoint("sizes");
-                const colorsData = await fetchEndpoint("colors");
-                const purposesData = await fetchEndpoint("purposes");
-                const gendersData = await fetchEndpoint("genders");
+                const [manufacturersData, sizesData, colorsData, purposesData, gendersData] = await Promise.all([
+                    fetchEndpoint("manufacturers"),
+                    fetchEndpoint("sizes"),
+                    fetchEndpoint("colors"),
+                    fetchEndpoint("purposes"),
+                    fetchEndpoint("genders")
+                ]);
 
-                // Set state with fetched data
                 setManufacturers(manufacturersData);
                 setSizes(sizesData);
                 setColors(colorsData);
                 setPurposes(purposesData);
                 setGenders(gendersData);
-
-                // Log the data for debugging
-                console.log("Manufacturers:", manufacturersData);
-                console.log("Sizes:", sizesData);
-                console.log("Colors:", colorsData);
-                console.log("Purposes:", purposesData);
-                console.log("Genders:", gendersData);
-
             } catch (error) {
                 console.error("Error fetching filter options:", error);
 
-                // Reset all loading states on error
                 setFiltersLoading({
                     manufacturers: false,
                     sizes: false,
@@ -121,98 +93,35 @@ const Filter = ({
         };
 
         fetchFilterOptions();
-    }, []);
+    }, [API_URL]);
 
-    // Apply filters
-    const applyFilters = useCallback(() => {
-        // Only send request if we have active filters or search query
-        setIsLoading(true);
-
-        if (Object.keys(activeFilters).length > 0 || searchQuery) {
-            const filterData = {...activeFilters};
-
-            // Add search query if present
-            if (searchQuery) {
-                filterData.search = searchQuery;
-            }
-
-            console.log("Sending filter data to backend:", filterData); // Add this for debugging
-
-            // Send POST request to filter endpoint
-            fetch(`${API_URL}api/sneakers/filter`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(filterData),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    // Send filtered results to parent component
-                    onFilterResults(data);
-                    setIsLoading(false);
-                })
-                .catch((error) => {
-                    console.error("Error filtering sneakers:", error);
-                    setIsLoading(false);
-                });
-        } else {
-            // No filters, fetch all sneakers
-            fetch(`${API_URL}/api/sneakers`)
-                .then((response) => response.json())
-                .then((data) => {
-                    onFilterResults(data);
-                    setIsLoading(false);
-                })
-                .catch((error) => {
-                    console.error("Error fetching all sneakers:", error);
-                    setIsLoading(false);
-                });
-        }
-    }, [activeFilters, searchQuery, onFilterResults]);
-
-    // Apply filters whenever activeFilters or searchQuery changes, with debounce
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            applyFilters();
-        }, 300); // 300ms debounce
-
-        return () => clearTimeout(timeoutId);
-    }, [activeFilters, searchQuery, applyFilters]);
-
-    // Safely process manufacturers data
-    const manufacturers = Array.isArray(manufacturersList) && manufacturersList.length > 0
-        ? ["All", ...new Set(manufacturersList.map(m => m.name || m))]
-        : ["All"];
-
-    // Toggle section expansion
     const toggleSection = (section) => {
-        if (expandedSection === section) {
-            setExpandedSection(null);
-        } else {
-            setExpandedSection(section);
-        }
+        setExpandedSections(prev => ({
+            ...prev,
+            [section]: !prev[section]
+        }));
     };
 
-    useEffect(() => {
-        if (!isMobileFiltersVisible) {
-            setExpandedSection(null);
-        }
-    }, [isMobileFiltersVisible]);
-
-    // Handle filter selection
     const handleFilterSelect = (type, value) => {
-        const newFilters = {...activeFilters};
+        const newFilters = {...pendingFilters};
 
-        if (type === "manufacturer" && value === "All") {
-            delete newFilters.manufacturer;
-        } else if (type === "manufacturer") {
-            newFilters.manufacturer = value;
+        if (type === "manufacturer") {
+            const manufacturer = manufacturersList.find(m => (m.name || m) === value);
+            const actualValue = manufacturer?.id || value;
+
+            if (!newFilters.manufacturer) {
+                newFilters.manufacturer = [actualValue];
+            } else if (newFilters.manufacturer.includes(actualValue)) {
+                newFilters.manufacturer = newFilters.manufacturer.filter(item => item !== actualValue);
+                if (newFilters.manufacturer.length === 0) {
+                    delete newFilters.manufacturer;
+                }
+            } else {
+                newFilters.manufacturer = [...newFilters.manufacturer, actualValue];
+            }
         } else if (type === "price") {
             newFilters.price = value;
         } else {
-            // For multi-select filters (size, color, purpose, gender)
-            // Make sure we're using the actual value, not an object
             const actualValue = typeof value === 'object' ? value.value || value.id || value : value;
 
             if (!newFilters[type]) {
@@ -227,34 +136,37 @@ const Filter = ({
             }
         }
 
-        console.log("New filters:", newFilters); // Add this for debugging
-        setActiveFilters(newFilters);
-        onFilterChange(newFilters);
+        onPendingFilterChange(newFilters);
     };
 
-    // Handle search input changes
-    const handleSearchInputChange = (value) => {
-        setSearchQuery(value);
-        onSearchChange(value);
-    };
+    const priceRanges = [
+        {minPrice: 0, maxPrice: 50, label: "Under $50"},
+        {minPrice: 50, maxPrice: 100, label: "$50 - $100"},
+        {minPrice: 100, maxPrice: 150, label: "$100 - $150"},
+        {minPrice: 150, maxPrice: 200, label: "$150 - $200"},
+        {minPrice: 200, maxPrice: null, label: "$200+"}
+    ];
 
-    // Check if a filter value is selected
+    const handleSearchInputChange = useCallback((value) => {
+        onPendingSearchChange(value);
+    }, [onPendingSearchChange]);
+
     const isFilterSelected = (type, value) => {
-        // Ensure we're using the correct value for comparison
         const actualValue = typeof value === 'object' ? value.value || value.id || value : value;
 
         if (type === "manufacturer") {
-            return activeFilters.manufacturer === actualValue || (actualValue === "All" && !activeFilters.manufacturer);
+            const manufacturer = manufacturersList.find(m => (m.name || m) === value);
+            const checkValue = manufacturer?.id || value;
+            return pendingFilters.manufacturer && pendingFilters.manufacturer.includes(checkValue);
         } else if (type === "price") {
-            return activeFilters.price &&
-                activeFilters.price.min === value.min &&
-                activeFilters.price.max === value.max;
+            return pendingFilters.price &&
+                pendingFilters.price.minPrice === value.minPrice &&
+                pendingFilters.price.maxPrice === value.maxPrice;
         } else {
-            return activeFilters[type] && activeFilters[type].includes(actualValue);
+            return pendingFilters[type] && pendingFilters[type].includes(actualValue);
         }
     };
 
-    // Helper function to safely get value and label from filter item
     const getFilterItemProps = (item, valueKey = 'value', labelKey = 'label') => {
         if (typeof item === 'string' || typeof item === 'number') {
             return {value: item, label: item};
@@ -266,494 +178,203 @@ const Filter = ({
         return {value: '', label: ''};
     };
 
-    // Render the filter section content
-    const renderFilterContent = (type, items, valueKey, labelKey) => {
-        if (filtersLoading[type]) {
-            return (
-                <div className="mt-3 text-center">
-                    <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
-                    <span className="ml-2 text-sm text-gray-500">Loading...</span>
-                </div>
-            );
-        }
-
-        if (!Array.isArray(items) || items.length === 0) {
-            return (
-                <div className="mt-3 text-sm text-gray-500">
-                    No options available
-                </div>
-            );
-        }
+    const renderFilterSection = (title, type, items, valueKey, labelKey) => {
+        const isExpanded = expandedSections[type];
+        const isLoadingData = filtersLoading[type];
 
         return (
-            <div className="mt-3 flex flex-wrap gap-2" id={`${type}-options`}>
-                {items.map((item) => {
-                    const {value, label} = getFilterItemProps(item, valueKey, labelKey);
-                    if (!value) return null;
+            <div className="border-b border-gray-200 dark:border-gray-800">
+                <button
+                    onClick={() => toggleSection(type)}
+                    className="w-full py-4 px-6 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                    <span className="font-medium text-gray-900 dark:text-white">{title}</span>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-5 w-5 text-blue-600 dark:text-blue-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
 
-                    // Ensure we're using the correct value for comparison
-                    const actualValue = typeof value === 'object' ? value.value || value.id || value : value;
+                <div
+                    className={`overflow-hidden transition-all duration-200 ${isExpanded ? 'max-h-96' : 'max-h-0'}`}
+                >
+                    <div className="px-6 pb-4 overflow-y-auto max-h-80">
+                        {isLoadingData ? (
+                            <div className="flex items-center justify-center py-4">
+                                <div
+                                    className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 dark:border-gray-100"></div>
+                            </div>
+                        ) : !Array.isArray(items) || items.length === 0 ? (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 py-2">No options available</p>
+                        ) : type === "price" ? (
+                            <div className="space-y-2">
+                                {priceRanges.map((range, index) => (
+                                    <label key={index} className="flex items-center cursor-pointer group py-1">
+                                        <div className="relative">
+                                            <input
+                                                type="checkbox"
+                                                checked={isFilterSelected("price", range) || false}
+                                                onChange={() => handleFilterSelect("price", range)}
+                                                className="sr-only peer"
+                                            />
+                                            <div
+                                                className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100 peer-checked:border-gray-900 dark:peer-checked:border-gray-100 transition-all duration-200 flex items-center justify-center group-hover:border-gray-400 dark:group-hover:border-gray-500">
+                                                <svg
+                                                    className="w-3 h-3 text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                >
+                                                    <path fillRule="evenodd"
+                                                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                          clipRule="evenodd"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <span
+                                            className="ml-3 text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+                                            {range.label}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="space-y-2">
+                                {items.map((item, index) => {
+                                    if (type === "manufacturer") {
+                                        return (
 
-                    return (
-                        <button
-                            key={actualValue}
-                            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                                isFilterSelected(type, actualValue)
-                                    ? "bg-white text-blue-500"
-                                    : "bg-blue-500 text-gray-100 hover:bg-gray-300"
-                            }`}
-                            onClick={() => handleFilterSelect(type, actualValue)}
-                            aria-pressed={isFilterSelected(type, actualValue)}
-                        >
-                            {label}
-                        </button>
-                    );
-                })}
+                                            <label key={item.id || index}
+                                                   className="flex items-center cursor-pointer group py-1">
+                                                <div className="relative">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isFilterSelected(type + 's', item.id) || false}
+                                                        onChange={() => handleFilterSelect(type + 's', item.id)}
+                                                        className="sr-only peer"
+                                                    />
+                                                    <div
+                                                        className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100 peer-checked:border-gray-900 dark:peer-checked:border-gray-100 transition-all duration-200 flex items-center justify-center group-hover:border-gray-400 dark:group-hover:border-gray-500">
+                                                        <svg
+                                                            className="w-3 h-3 text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path fillRule="evenodd"
+                                                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                                  clipRule="evenodd"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <span
+                                                    className="ml-3 text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+                                                    {item.name || item}
+                                                </span>
+                                            </label>
+                                        );
+                                    } else {
+                                        const {value, label} = getFilterItemProps(item, valueKey, labelKey);
+                                        if (!value) return null;
+
+                                        const actualValue = typeof value === 'object' ? value.value || value.id || value : value;
+
+                                        return (
+                                            <label key={actualValue || index}
+                                                   className="flex items-center cursor-pointer group py-1">
+                                                <div className="relative">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isFilterSelected(type + 's', actualValue) || false}
+                                                        onChange={() => handleFilterSelect(type + 's', actualValue)}
+                                                        className="sr-only peer"
+                                                    />
+                                                    <div
+                                                        className="w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded peer-checked:bg-gray-900 dark:peer-checked:bg-gray-100 peer-checked:border-gray-900 dark:peer-checked:border-gray-100 transition-all duration-200 flex items-center justify-center group-hover:border-gray-400 dark:group-hover:border-gray-500">
+                                                        <svg
+                                                            className="w-3 h-3 text-white dark:text-gray-900 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path fillRule="evenodd"
+                                                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                                  clipRule="evenodd"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <span
+                                                    className="ml-3 text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+                                                    {label}
+                                                </span>
+                                            </label>
+                                        );
+                                    }
+                                })}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         );
     };
 
     return (
-        <div className="container mx-auto px-4">
-            <div className="flex flex-col mb-8">
-                {/* Search bar */}
-                <div className="relative w-full mb-6">
+        <div className="h-full flex flex-col">
+            {/* Search */}
+            <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+                <div className="relative">
                     <input
                         type="text"
-                        placeholder="Search sneakers..."
-                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm transition-all duration-200 hover:shadow-md"
-                        value={searchQuery}
+                        placeholder="Search..."
+                        value={pendingSearchQuery}
                         onChange={(e) => handleSearchInputChange(e.target.value)}
-                        aria-label="Search sneakers"
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-100 focus:border-transparent outline-none"
                     />
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-600 dark:text-blue-400"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        aria-hidden="true"
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
+            </div>
 
-                {/* Loading indicator */}
-                {isLoading && (
-                    <div className="text-center mb-4">
-                        <div
-                            className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                        <span className="ml-2 text-sm text-gray-500">Updating results...</span>
-                    </div>
-                )}
+            {/* Filter sections */}
+            <div className="flex-1 overflow-y-auto">
+                {renderFilterSection("Brand", "manufacturer", manufacturersList)}
+                {renderFilterSection("Size", "size", sizes, "value", "label")}
+                {renderFilterSection("Color", "color", colors, "value", "label")}
+                {renderFilterSection("Purpose", "purpose", purposes, "value", "label")}
+                {renderFilterSection("Gender", "gender", genders, "value", "label")}
+                {renderFilterSection("Price", "price", priceRanges)}
+            </div>
 
-                {/* Mobile filter button - only visible on mobile */}
-                <div className="md:hidden mb-4">
-                    <button
-                        className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg shadow-md flex items-center justify-center gap-2 transition-all duration-300 hover:bg-blue-700"
-                        onClick={() => setIsMobileFiltersVisible(!isMobileFiltersVisible)}
-                        aria-expanded={isMobileFiltersVisible}
-                        aria-controls="mobile-filters"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                            />
-                        </svg>
-                        {/* ... button content ... */}
-                        {isMobileFiltersVisible ? "Hide Filters" : "Show Filters"}
-                    </button>
-                </div>
-
-                {/* Filters container - Fixed to show on mobile when mobile-filters is toggled */}
-                <div
-                    id="mobile-filters"
-                    className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mobile-filters-transition
-                    ${isMobileFiltersVisible ?
-                        "mobile-filters-enter-active" :
-                        "mobile-filters-enter"
-                    }
-                    md:!max-h-[none] md:!opacity-100 /* Force reset on desktop */`}
-
-                    style={{
-                        transitionProperty: 'max-height, opacity',
-                        overflow: 'hidden'
-                    }}
+            {/* Action buttons */}
+            <div className="p-6 border-t border-gray-200 dark:border-gray-800 space-y-3">
+                <button
+                    onClick={onApplyFilters}
+                    disabled={isLoading}
+                    className="w-full py-3 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    {/* Manufacturer filter */}
-                    <div
-                        className="border rounded-lg shadow-sm p-4 bg-transparent transition-all duration-300 hover:shadow-md">
-                        <div
-                            className="flex justify-between items-center cursor-pointer"
-                            onClick={() => toggleSection("manufacturers")}
-                            aria-expanded={expandedSection === "manufacturers"}
-                            aria-controls="manufacturer-options"
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    toggleSection("manufacturers");
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <h3 className="font-medium text-white-100">Manufacturer</h3>
-                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
-                                  style={{transform: expandedSection === "manufacturers" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-              </svg>
-            </span>
-                        </div>
-
-                        <div
-                            className="overflow-hidden transition-all duration-500 ease-linear"
-                            style={{
-                                maxHeight: expandedSection === "manufacturers" ? '500px' : '0',
-                                opacity: expandedSection === "manufacturers" ? 1 : 0
-                            }}
-                        >
-                            {expandedSection === "manufacturers" && renderFilterContent("manufacturers", manufacturers)}
-                        </div>
-                    </div>
-
-                    {/* Size filter */}
-                    <div
-                        className="border rounded-lg shadow-sm p-4 bg-transparent transition-all duration-300 hover:shadow-md">
-                        <div
-                            className="flex justify-between items-center cursor-pointer"
-                            onClick={() => toggleSection("sizes")}
-                            aria-expanded={expandedSection === "sizes"}
-                            aria-controls="size-options"
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    toggleSection("sizes");
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <h3 className="font-medium text-white-100">Size</h3>
-                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
-                                  style={{transform: expandedSection === "sizes" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-              </svg>
-            </span>
-                        </div>
-
-                        <div
-                            className="overflow-hidden transition-all duration-500 ease-linear"
-                            style={{
-                                maxHeight: expandedSection === "sizes" ? '500px' : '0',
-                                opacity: expandedSection === "sizes" ? 1 : 0
-                            }}
-                        >
-                            {expandedSection === "sizes" && renderFilterContent("sizes", sizes, "value", "label")}
-                        </div>
-                    </div>
-
-                    {/* Color filter */}
-                    <div
-                        className="border rounded-lg shadow-sm p-4 bg-transparent transition-all duration-300 hover:shadow-md">
-                        <div
-                            className="flex justify-between items-center cursor-pointer"
-                            onClick={() => toggleSection("colors")}
-                            aria-expanded={expandedSection === "colors"}
-                            aria-controls="color-options"
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    toggleSection("colors");
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <h3 className="font-medium text-white-100">Color</h3>
-                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
-                                  style={{transform: expandedSection === "colors" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-              </svg>
-            </span>
-                        </div>
-
-                        <div
-                            className="overflow-hidden transition-all duration-500 ease-linear"
-                            style={{
-                                maxHeight: expandedSection === "colors" ? '500px' : '0',
-                                opacity: expandedSection === "colors" ? 1 : 0
-                            }}
-                        >
-                            {expandedSection === "colors" && renderFilterContent("colors", colors, "value", "label")}
-                        </div>
-                    </div>
-
-                    {/* Purpose filter */}
-                    <div
-                        className="border rounded-lg shadow-sm p-4 bg-transparent transition-all duration-300 hover:shadow-md">
-                        <div
-                            className="flex justify-between items-center cursor-pointer"
-                            onClick={() => toggleSection("purposes")}
-                            aria-expanded={expandedSection === "purposes"}
-                            aria-controls="purpose-options"
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    toggleSection("purposes");
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <h3 className="font-medium text-white-100">Purpose</h3>
-                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
-                                  style={{transform: expandedSection === "purposes" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-              </svg>
-            </span>
-                        </div>
-
-                        <div
-                            className="overflow-hidden transition-all duration-500 ease-linear"
-                            style={{
-                                maxHeight: expandedSection === "purposes" ? '500px' : '0',
-                                opacity: expandedSection === "purposes" ? 1 : 0
-                            }}
-                        >
-                            {expandedSection === "purposes" && renderFilterContent("purposes", purposes, "value", "label")}
-                        </div>
-                    </div>
-
-                    {/* Gender filter */}
-                    <div
-                        className="border rounded-lg shadow-sm p-4 bg-transparent transition-all duration-300 hover:shadow-md">
-                        <div
-                            className="flex justify-between items-center cursor-pointer"
-                            onClick={() => toggleSection("genders")}
-                            aria-expanded={expandedSection === "genders"}
-                            aria-controls="gender-options"
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    toggleSection("genders");
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <h3 className="font-medium text-white-100">Gender</h3>
-                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
-                                  style={{transform: expandedSection === "genders" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-              </svg>
-            </span>
-                        </div>
-
-                        <div
-                            className="overflow-hidden transition-all duration-500 ease-linear"
-                            style={{
-                                maxHeight: expandedSection === "genders" ? '500px' : '0',
-                                opacity: expandedSection === "genders" ? 1 : 0
-                            }}
-                        >
-                            {expandedSection === "genders" && renderFilterContent("genders", genders, "value", "label")}
-                        </div>
-                    </div>
-
-                    {/* Price filter */}
-                    <div
-                        className="border rounded-lg shadow-sm p-4 bg-transparent transition-all duration-300 hover:shadow-md">
-                        <div
-                            className="flex justify-between items-center cursor-pointer"
-                            onClick={() => toggleSection("price")}
-                            aria-expanded={expandedSection === "price"}
-                            aria-controls="price-options"
-                            role="button"
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    toggleSection("price");
-                                    e.preventDefault();
-                                }
-                            }}
-                        >
-                            <h3 className="font-medium text-white-100">Price</h3>
-                            <span className="text-blue-600 text-lg transition-transform duration-300 transform"
-                                  style={{transform: expandedSection === "price" ? 'rotate(180deg)' : 'rotate(0deg)'}}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
-              </svg>
-            </span>
-                        </div>
-
-                        <div
-                            className="overflow-hidden transition-all duration-500 ease-linear"
-                            style={{
-                                maxHeight: expandedSection === "price" ? '500px' : '0',
-                                opacity: expandedSection === "price" ? 1 : 0
-                            }}
-                        >
-                            {expandedSection === "price" && (
-                                <div className="mt-3 flex flex-col gap-2" id="price-options">
-                                    {priceRanges.map((range, index) => (
-                                        <button
-                                            key={index}
-                                            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200 text-left ${
-                                                isFilterSelected("price", range)
-                                                    ? "bg-white text-blue-500"
-                                                    : "bg-blue-500 text-white hover:bg-gray-300"
-                                            }`}
-                                            onClick={() => handleFilterSelect("price", range)}
-                                            aria-pressed={isFilterSelected("price", range)}
-                                        >
-                                            {range.label}
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Active filters display */}
-                {Object.keys(activeFilters).length > 0 && (
-                    <div>
-                        <div className="flex items-center justify-between gap-3 mt-4">
-                            <h2 className="text-l font-medium text-white text-center">Active filters:</h2>
-                            <button
-                                className="px-3 py-1 bg-white text-blue-600 rounded-full text-sm transition-colors duration-200 hover:text-blue-800"
-                                onClick={() => {
-                                    setActiveFilters({});
-                                    onFilterChange({});
-                                }}
-                                aria-label="Clear all filters"
-                            >
-                                Clear all
-                            </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2 items-center py-3 rounded-lg" aria-live="polite">
-                            {Object.entries(activeFilters).map(([type, value]) => {
-                                if (type === "price") {
-                                    return (
-                                        <button
-                                            key={`${type}-${value.label}`}
-                                            className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
-                                            onClick={() => {
-                                                const newFilters = {...activeFilters};
-                                                delete newFilters.price;
-                                                setActiveFilters(newFilters);
-                                                onFilterChange(newFilters);
-                                            }}
-                                            aria-label={`Remove price filter: ${value.label}`}
-                                        >
-                                            {value.label}
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor"
-                                                 viewBox="0 0 24 24"
-                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                      d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    );
-                                } else if (Array.isArray(value)) {
-                                    return value.map(item => {
-                                        // Find label for item using the helper function
-                                        let label = item;
-                                        const filterArrays = {
-                                            "size": sizes,
-                                            "color": colors,
-                                            "purpose": purposes,
-                                            "gender": genders
-                                        };
-
-                                        if (filterArrays[type]) {
-                                            const filterArray = filterArrays[type];
-                                            if (Array.isArray(filterArray)) {
-                                                const foundItem = filterArray.find(i => {
-                                                    const {value} = getFilterItemProps(i, type === "size" ? "size" : "value");
-                                                    return value === item;
-                                                });
-
-                                                if (foundItem) {
-                                                    const {label: itemLabel} = getFilterItemProps(
-                                                        foundItem,
-                                                        type === "size" ? "size" : "value",
-                                                        type === "size" ? "size" : "label"
-                                                    );
-                                                    label = itemLabel;
-                                                }
-                                            }
-                                        }
-
-                                        return (
-                                            <button
-                                                key={`${type}-${item}`}
-                                                className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
-                                                onClick={() => handleFilterSelect(type, item)}
-                                                aria-label={`Remove ${type} filter: ${label}`}
-                                            >
-                                                {label}
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor"
-                                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                                                     aria-hidden="true">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                          d="M6 18L18 6M6 6l12 12"></path>
-                                                </svg>
-                                            </button>
-                                        );
-                                    });
-                                } else {
-                                    return (
-                                        <button
-                                            key={`${type}-${value}`}
-                                            className="px-3 py-1 bg-indigo-100 text-blue-800 rounded-full text-sm flex items-center gap-1 transition-all duration-200 hover:bg-indigo-200"
-                                            onClick={() => {
-                                                const newFilters = {...activeFilters};
-                                                delete newFilters[type];
-                                                setActiveFilters(newFilters);
-                                                onFilterChange(newFilters);
-                                            }}
-                                            aria-label={`Remove ${type} filter: ${value}`}
-                                        >
-                                            {value}
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor"
-                                                 viewBox="0 0 24 24"
-                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                      d="M6 18L18 6M6 6l12 12"></path>
-                                            </svg>
-                                        </button>
-                                    );
-                                }
-                            })}
-                        </div>
-                    </div>
-                )}
+                    {isLoading ? 'Loading...' : 'Apply Filters'}
+                </button>
+                <button
+                    onClick={onResetFilters}
+                    disabled={isLoading}
+                    className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-full font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Clear All
+                </button>
             </div>
         </div>
     );

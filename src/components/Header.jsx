@@ -9,16 +9,13 @@ const Header = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const menuRef = useRef(null);
 
-    // Minimum swipe distance (in px)
     const minSwipeDistance = 50;
 
-    // Handle window resize to detect mobile/desktop view
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768;
             setIsMobile(mobile);
 
-            // Close menu when switching to desktop
             if (!mobile && menuOpen) {
                 setMenuOpen(false);
             }
@@ -28,7 +25,6 @@ const Header = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, [menuOpen]);
 
-    // Handle swipe gesture
     const onTouchStart = (e) => {
         if (!menuOpen) return;
         setTouchStart(e.targetTouches[0].clientX);
@@ -40,12 +36,9 @@ const Header = () => {
         const currentPosition = e.targetTouches[0].clientX;
         setTouchEnd(currentPosition);
 
-        // Calculate swipe distance (negative value means swiping left)
         const distance = currentPosition - touchStart;
 
-        // Only allow swiping left to close (negative distance)
         if (distance < 0) {
-            // Map touch position to menu position (0 to -100%)
             const newPosition = Math.max(-100, (distance / menuRef.current.offsetWidth) * 100);
             setMenuPosition(newPosition);
         }
@@ -54,14 +47,11 @@ const Header = () => {
     const onTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
 
-        // Calculate final swipe distance
         const distance = touchEnd - touchStart;
 
-        // If swipe distance is greater than minimum and direction is left, close menu
         if (distance < -minSwipeDistance) {
             setMenuOpen(false);
         } else {
-            // Reset menu position if swipe wasn't enough to close
             setMenuPosition(0);
         }
 
@@ -69,12 +59,10 @@ const Header = () => {
         setTouchEnd(null);
     };
 
-    // Reset menu position when menu is toggled
     useEffect(() => {
         setMenuPosition(0);
     }, [menuOpen]);
 
-    // Handle clicks outside the menu to close it
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target) && !e.target.closest('button')) {
@@ -92,21 +80,20 @@ const Header = () => {
     }, [menuOpen]);
 
     return (
-        <header className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
-            <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <header className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm border-b border-gray-200 dark:border-gray-800">
+            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                 {/* Logo Section */}
-                <div className="flex items-center space-x-2">
-                    <span className="material-symbols-outlined">
+                <Link to="/" className="flex items-center space-x-2 group">
+                    <span className="material-symbols-outlined text-3xl text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         steps
                     </span>
-
-                    <h2 className="hidden lg:inline text-4xl font-bold tracking-wider">Sneaker Shop</h2>
-                    <h2 className="inline lg:hidden text-4xl font-bold tracking-wider">Shop</h2>
-                </div>
+                    <h2 className="hidden lg:inline text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Sneaker Shop</h2>
+                    <h2 className="inline lg:hidden text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Shop</h2>
+                </Link>
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="md:hidden p-2 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                    className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-400"
                     onClick={() => setMenuOpen(!menuOpen)}
                     aria-label={menuOpen ? "Close menu" : "Open menu"}
                 >
@@ -131,10 +118,10 @@ const Header = () => {
                     onClick={() => setMenuOpen(false)}
                 ></div>
 
-                {/* Navigation Menu - Mobile (Drawer) & Desktop (Horizontal) */}
+                {/* Navigation Menu */}
                 <nav
                     ref={menuRef}
-                    className={`fixed md:static top-0 left-0 h-full md:h-auto w-3/4 max-w-xs md:w-auto bg-blue-600 md:bg-transparent z-20 transition-transform duration-300 ease-in-out md:translate-x-0 shadow-lg md:shadow-none md:ml-auto md:mr-22`}
+                    className={`fixed md:static top-0 left-0 h-full md:h-auto w-3/4 max-w-xs md:w-auto bg-white dark:bg-gray-900 md:bg-transparent z-20 transition-transform duration-300 ease-in-out md:translate-x-0 shadow-lg md:shadow-none md:ml-auto`}
                     style={{
                         transform: isMobile && !menuOpen ? 'translateX(-100%)' : 'translateX(0)',
                         marginLeft: menuPosition ? `${menuPosition}%` : '0'
@@ -144,11 +131,11 @@ const Header = () => {
                     onTouchEnd={onTouchEnd}
                 >
                     {/* Mobile Menu Header */}
-                    <div className="flex justify-between items-center p-4 border-b border-blue-500 md:hidden">
-                        <span className="font-bold text-lg">Menu</span>
+                    <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 md:hidden">
+                        <span className="font-bold text-lg text-gray-900 dark:text-white">Menu</span>
                         <button
                             onClick={() => setMenuOpen(false)}
-                            className="p-1 rounded-full hover:bg-blue-700"
+                            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
@@ -159,40 +146,40 @@ const Header = () => {
                     </div>
 
                     {/* Menu Items */}
-                    <ul className="md:flex md:items-center p-4 md:p-0 md:ml-auto">
-                        <li className="mb-4 md:mb-0 md:ml-8">
+                    <ul className="md:flex md:items-center p-4 md:p-0 md:ml-auto md:space-x-2">
+                        <li className="mb-4 md:mb-0">
                             <Link
                                 to="/"
-                                className="block py-2 px-4 rounded hover:bg-blue-700 md:hover:bg-blue-500 transition-colors font-medium"
+                                className="block py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Home
                             </Link>
                         </li>
-                        <li className="mb-4 md:mb-0 md:ml-8">
+                        <li className="mb-4 md:mb-0">
                             <Link
                                 to="/shop"
-                                className="block py-2 px-4 rounded hover:bg-blue-700 md:hover:bg-blue-500 transition-colors font-medium"
+                                className="block py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Shop
                             </Link>
                         </li>
-                        <li className="mb-4 md:mb-0 md:ml-8 text-white">
+                        <li className="mb-4 md:mb-0">
                             <Link
                                 to="/cart"
-                                className="block py-2 px-4 rounded hover:bg-blue-700 md:hover:bg-blue-500 transition-colors font-medium relative"
+                                className="block py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white relative"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Cart
                                 <span
-                                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-yellow-400 text-blue-900 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">3</span>
+                                    className="absolute top-1 right-1 transform translate-x-1/2 -translate-y-1/2 bg-blue-600 dark:bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">3</span>
                             </Link>
                         </li>
-                        <li className="mb-4 md:mb-0 md:ml-8">
+                        <li className="mb-4 md:mb-0 md:ml-2">
                             <Link
                                 to="/login"
-                                className="block py-2 px-4 bg-white text-blue-600 rounded shadow hover:bg-gray-100 transition-colors font-medium"
+                                className="block py-3 px-6 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-full font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-300 text-center"
                                 onClick={() => setMenuOpen(false)}
                             >
                                 Login

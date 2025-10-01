@@ -4,10 +4,10 @@ import SneakerDetails from "../components/SneakerDetails.jsx";
 import {useParams} from "react-router-dom";
 
 const SneakerDetailsPage = () => {
-    const { id } = useParams(); // Get the ID from the URL
+    const {id} = useParams(); // Get the ID from the URL
 
     return (
-        <div className="bg-gradient-to-r from-slate-700 to-slate-900 transition-colors">
+        <div className="bg-gray-50 dark:bg-gray-900 transition-colors min-h-screen flex flex-col">
             <Header/>
             <SneakerDetails sneakerId={id}/>
             <Footer/>
